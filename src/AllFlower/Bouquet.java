@@ -38,6 +38,19 @@ public class Bouquet {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bouquet bouquet = (Bouquet) o;
+        return Arrays.equals(flowers, bouquet.flowers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(flowers);
+    }
+
+    @Override
     public String toString() {
         return "Flower.Bouquet{" +
                 "flowers=" + Arrays.toString(flowers) +

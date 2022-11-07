@@ -2,6 +2,8 @@ package AllFlower;
 
 import Transport.ValidationUtils;
 
+import java.util.Objects;
+
 
 public class Flower {
     private String flowerName;
@@ -50,6 +52,19 @@ public class Flower {
 
     public void setLifeSpan(int lifeSpan) {
         this.lifeSpan = Math.abs(lifeSpan);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flower flower = (Flower) o;
+        return Double.compare(flower.cost, cost) == 0 && lifeSpan == flower.lifeSpan && Objects.equals(flowerName, flower.flowerName) && Objects.equals(country, flower.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flowerName, country, cost, lifeSpan);
     }
 
     @Override

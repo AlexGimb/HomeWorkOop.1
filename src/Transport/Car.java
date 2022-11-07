@@ -1,8 +1,9 @@
 package Transport;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class Car {
+public class Car extends Transport{
     public static class Key {
         private final boolean remoteStart;
         private final boolean keylessAccess;
@@ -100,12 +101,7 @@ public class Car {
             }
         }
     }
-    private String brand;
-    private String model;
     private double engineVolume;
-    private String color;
-    private int productionYear;
-    private String productionCountry;
     private String transmission;
     private String bodyType;
     private String registrationNumber;
@@ -113,18 +109,13 @@ public class Car {
     private String wheels;
     private Key key;
     private Insurance insurance;
-
     public Car(String brand, String model, double engineVolume,
                String color, int productionYear,
                String productionCountry, String transmission, String bodyType,
                String registrationNumber, int numberOfSeats,
-               Key key,Insurance insurance) {
-        this.brand = ValidationUtils.Validation(brand, "Информация отсутствует");
-        this.model = ValidationUtils.Validation(model, "Информация отсутствует");
+               Key key,Insurance insurance,int maxSpeed,String fuel) {
+        super(brand, model, productionYear, productionCountry, color, maxSpeed,fuel);
         setEngineVolume(engineVolume);
-        setColor(color);
-        this.productionYear = productionYear >= 0 ? productionYear : 2000;
-        this.productionCountry = ValidationUtils.Validation(productionCountry, "Информация отсутствует");
         setTransmission(transmission);
         this.bodyType = ValidationUtils.Validation(bodyType, "Информация отсутствует");
         setRegistrationNumber(registrationNumber);
@@ -134,14 +125,20 @@ public class Car {
         this.insurance = insurance;
     }
 
+    @Override
+    public void refill() {
+        if (getFuel().equalsIgnoreCase("Бензин")) {
+            System.out.println("Нужно заправлять бензин");
+        } else if (getFuel().equalsIgnoreCase("Дизель")) {
+            System.out.println("Нужно заправлять дизель");
+        } else {
+            System.out.println("Нужно заряжать на специальных электро-парковках");
+        }
+    }
+
     public static boolean registrationNumberValid(String registrationNumber) {
-        return registrationNumber.matches("[A-Z,У,К,Е,Н,Х,В,А,П,Р,О,С,М,Т]\\d{3}[A-Z,У,К,Е,Н,Х,В,А,П,Р,О,С,М,Т]{2}\\d{2,3}");
-    }
-    public String getBrand() {
-        return brand;
-    }
-    public String getModel() {
-        return model;
+        return registrationNumber.matches
+                ("[E,T,Y,O,P,A,H,K,X,C,B,M,У,К,Е,Н,Х,В,А,П,Р,О,С,М,Т]\\d{3}[E,T,Y,O,P,A,H,K,X,C,B,M,У,К,Е,Н,Х,В,А,П,Р,О,С,М,Т]{2}\\d{2,3}");
     }
     public double getEngineVolume() {
         return engineVolume;
@@ -151,18 +148,6 @@ public class Car {
             this.engineVolume = 1.5;
         }else
         this.engineVolume = engineVolume;
-    }
-    public String getColor() {
-        return color;
-    }
-    public void setColor(String color) {
-        this.color = ValidationUtils.Validation(color, "Белый");
-    }
-    public int getProductionYear() {
-        return productionYear;
-    }
-    public String getProductionCountry() {
-        return productionCountry;
     }
     public String getTransmission() {
         return transmission;
@@ -195,13 +180,26 @@ public class Car {
         }else
             this.wheels = "Зимняя";
     }
-
     public Key getKey() {
         return key;
     }
 
     public Insurance getInsurance() {
         return insurance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Car car = (Car) o;
+        return Double.compare(car.engineVolume, engineVolume) == 0 && numberOfSeats == car.numberOfSeats && Objects.equals(transmission, car.transmission) && Objects.equals(bodyType, car.bodyType) && Objects.equals(registrationNumber, car.registrationNumber) && Objects.equals(wheels, car.wheels) && Objects.equals(key, car.key) && Objects.equals(insurance, car.insurance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), engineVolume, transmission, bodyType, registrationNumber, numberOfSeats, wheels, key, insurance);
     }
 
     @Override
@@ -213,6 +211,7 @@ public class Car {
                 ", страна сборки: " + getProductionCountry() +
                 ", коробка передач : " + getTransmission() +
                 ", тип кузова: " + getBodyType() +
+                ", максимальная скорость: " + getMaxSpeed() +
                 ", регистрационный номер: " + getRegistrationNumber() +
                 ", мест: " + getNumberOfSeats() +
                 ", резина: " + getWheels() + key.toString() +
